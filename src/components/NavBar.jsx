@@ -36,7 +36,7 @@ export function Footer() {
         </div>
       </div>
       <div className="right">
-        <a href="#" className="font-poppins text-base font-medium">
+        <a href="#" className="font-poppins text-base font-medium underline">
           Homepage
         </a>
       </div>
