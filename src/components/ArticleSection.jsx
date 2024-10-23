@@ -6,10 +6,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
 import { blogPosts } from "../data/blogPost";
 
 export default function ArticleSection() {
   const categories = ["Highlight", "Cat", "Inspiration", "General"];
+  const [activeCategory, setActiveCategory] = useState("Highlight");
+
+  const handleCategoryClick = (category) => {
+    if (category !== activeCategory) {
+      setActiveCategory(category);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8 mb-12 mt-10">
       <h1 className=" font-poppins font-semibold text-2xl text-left px-4">
@@ -17,14 +26,22 @@ export default function ArticleSection() {
       </h1>
       <div className="article-tab flex flex-col sm:flex-row justify-between items-center bg-[#EFEEEB] px-6 py-4">
         <div className="article-nav hidden sm:flex flex-row px-6 py-4 ">
-          {categories.map((item) => {
+          {categories.map((category) => {
             return (
-              <p
-                key={item}
-                className="px-5 py-3 rounded-lg text-[#75716B] hover:text-black hover:bg-[#DAD6D1] font-poppins font-medium text-base"
+              <button
+                key={category}
+                onClick={() => handleCategoryClick(category)}
+                disabled={category === activeCategory}
+                className={`px-5 py-3 rounded-lg font-poppins font-medium text-base
+                ${category === activeCategory ? "bg-[#DAD6D1] font-bold" : ""}
+                ${
+                  category !== activeCategory
+                    ? "hover:bg-[#DAD6D1]"
+                    : "cursor-not-allowed"
+                }`}
               >
-                {item}
-              </p>
+                {category}
+              </button>
             );
           })}
         </div>
