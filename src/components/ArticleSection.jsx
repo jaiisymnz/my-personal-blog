@@ -6,8 +6,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
-import { blogPosts } from "../data/blogPost";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 
 export default function ArticleSection() {
   const categories = ["Highlight", "Cat", "Inspiration", "General"];
@@ -74,11 +75,41 @@ export default function ArticleSection() {
     </div>
   );
 }
+
+
+
 export function BlogCard() {
+
+const [blogs,setBlogs] = useState([]);
+
+
+   const getBlogInformation = async () => {
+     try {
+       const response = await axios.get(`https://blog-post-project-api.vercel.app/posts?limit=6`);
+       console.log(response)
+       setBlogs(response.data.posts);
+     } catch (error) {
+       alert(error);
+     }
+   };
+
+  useEffect(() => {
+    getBlogInformation();
+  }, []);
+
+ const formatDateCustom = (dateString) => {
+   const date = new Date(dateString);
+   const year = date.getFullYear();
+   const month = date.toLocaleString("en-US", { month: "short" }); // e.g., "Sep"
+   const day = String(date.getDate()).padStart(2, "0"); // Ensure 2 digits
+   return `${year}-${month}-${day}`; // Format: 2024-Sep-11
+ };
+
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-4 md:px-4">
-      {blogPosts.map((article, index) => (
-        <div className="flex flex-col gap-4" key={index}>
+      {blogs.map((article) => (
+        <div className="flex flex-col gap-4" key={article.id}>
           <a href={article.link} className="relative h-[212px] sm:h-[360px]">
             <img
               className="w-full h-full object-cover rounded-md"
@@ -108,7 +139,9 @@ export function BlogCard() {
               />
               <span className="font-medium">{article.author}</span>
               <span className="mx-2 text-gray-300">|</span>
-              <span className="font-medium text-[#75716B]">{article.date}</span>
+              <span className="font-medium text-[#75716B]">
+                {formatDateCustom(article.date)}
+              </span>
             </div>
           </div>
         </div>
