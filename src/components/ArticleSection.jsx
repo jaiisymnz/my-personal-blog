@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 export default function ArticleSection() {
   const categories = ["Highlight", "Cat", "Inspiration", "General"];
@@ -76,47 +76,46 @@ export default function ArticleSection() {
   );
 }
 
-
-
 export function BlogCard() {
+  const navigate = useNavigate();
+  const [blogs, setBlogs] = useState([]);
 
-const [blogs,setBlogs] = useState([]);
-
-
-   const getBlogInformation = async () => {
-     try {
-       const response = await axios.get(`https://blog-post-project-api.vercel.app/posts?limit=6`);
-       console.log(response)
-       setBlogs(response.data.posts);
-     } catch (error) {
-       alert(error);
-     }
-   };
+  const getBlogInformation = async () => {
+    try {
+      const response = await axios.get(
+        `https://blog-post-project-api.vercel.app/posts?limit=6`
+      );
+      console.log(response);
+      setBlogs(response.data.posts);
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   useEffect(() => {
     getBlogInformation();
   }, []);
 
- const formatDateCustom = (dateString) => {
-   const date = new Date(dateString);
-   const year = date.getFullYear();
-   const month = date.toLocaleString("en-US", { month: "short" }); // e.g., "Sep"
-   const day = String(date.getDate()).padStart(2, "0"); // Ensure 2 digits
-   return `${year}-${month}-${day}`; // Format: 2024-Sep-11
- };
-
+  const formatDateCustom = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.toLocaleString("en-US", { month: "short" }); // e.g., "Sep"
+    const day = String(date.getDate()).padStart(2, "0"); // Ensure 2 digits
+    return `${year}-${month}-${day}`; // Format: 2024-Sep-11
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-4 md:px-4">
       {blogs.map((article) => (
         <div className="flex flex-col gap-4" key={article.id}>
-          <a href={article.link} className="relative h-[212px] sm:h-[360px]">
+          <button
+        onClick={() => navigate(`/post/${article.id}`)} className="relative h-[212px] sm:h-[360px]">
             <img
               className="w-full h-full object-cover rounded-md"
               src={article.image}
               alt={`Image for ${article.title}`}
             />
-          </a>
+          </button>
           <div className="flex flex-col">
             <div className="flex">
               <span className="bg-green-200 rounded-full px-3 py-1 font-poppins text-sm text-green-600 mb-2">
